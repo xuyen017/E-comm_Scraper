@@ -27,7 +27,8 @@ def save_data_to_s3(data, keyword):
             "category", "timecrawl"
         ])
     else:
-        raise ValueError("Data should be a list of records (tuples or dictionaries)")
+        raise ValueError(
+            "Data should be a list of records (tuples or dictionaries)")
 
     # Tạo kết nối S3 với boto3
     s3 = boto3.client('s3', 
@@ -43,5 +44,6 @@ def save_data_to_s3(data, keyword):
     file_name = f"{keyword}_output.csv"
 
     # Upload lên S3
-    s3.put_object(Bucket=bucket_name, Key=file_name, Body=csv_buffer.getvalue())
+    s3.put_object(
+        Bucket=bucket_name, Key=file_name, Body=csv_buffer.getvalue())
     print(f"File uploaded successfully to {bucket_name}/{file_name}")

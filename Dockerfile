@@ -11,17 +11,30 @@ RUN rm -rf /var/lib/apt/lists/* \
     libgconf-2-4 \
     libfontconfig1 \
     wget \
-    unzip
+    unzip \
+    openjdk-11-jdk  # Cài đặt Java cho Spark
+
+# Cài đặt PostgreSQL client
+RUN apt-get install -y postgresql-client
 
 # Tải và cài đặt Google Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && apt install -y ./google-chrome-stable_current_amd64.deb \
     && rm -f google-chrome-stable_current_amd64.deb
 
-# Thiết lập lại người dùng airflow
-USER airflow
+# Cài đặt Apache Spark
+RUN wget https://dlcdn.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz \
+    && tar -xvzf spark-3.5.3-bin-hadoop3.tgz \
+    && mv spark-3.5.3-bin-hadoop3 /opt/spark \
+    && rm spark-3.5.3-bin-hadoop3.tgz
 
-# Sao chép requirements.txt vào container và cài đặt các phụ thuộc
+# Thiết lập biến môi trường cho Spark
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$PATH:$SPARK_HOME/bin
+
+# Chuyển sang người dùng airflow trước khi cài đặt các gói
+USER airflow
+# Cài đặt pip và các phụ thuộc trong requirements.txt
 COPY requirements.txt /opt/airflow/requirements.txt
 RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
 
@@ -38,7 +51,6 @@ COPY storage /opt/airflow/storage
 
 # Cập nhật PYTHONPATH để Python tìm kiếm trong các thư mục này
 ENV PYTHONPATH="/opt/airflow/scraping:/opt/airflow/parsing:/opt/airflow/storage:${PYTHONPATH}"
-
 
 # Tạo các thư mục với quyền truy cập cần thiết nếu cần
 RUN mkdir -p /opt/airflow/dags /opt/airflow/utils /opt/airflow/scraping /opt/airflow/parsing /opt/airflow/config /opt/airflow/storage

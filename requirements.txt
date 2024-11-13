@@ -8,3 +8,4 @@ selenium
 boto3
 apache-airflow
 python-dotenv
+pyspark

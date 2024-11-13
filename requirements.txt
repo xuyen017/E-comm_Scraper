@@ -1,0 +1,10 @@
+pandas
+beautifulsoup4
+yamlloader
+psycopg2-binary
+webdriver-manager
+requests
+selenium
+boto3
+apache-airflow
+python-dotenv

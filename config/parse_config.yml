@@ -1,0 +1,5 @@
+tiki:
+  search_url: "https://tiki.vn/search?q="
+  
+sendo:
+  search_url: "https://www.sendo.vn/tim-kiem?q="

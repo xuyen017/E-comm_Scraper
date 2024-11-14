@@ -31,17 +31,23 @@ read_keyword_task = PythonOperator(
 
 
 def run_scrape_data_tiki(**kwargs):
-    keyword = kwargs['ti'].xcom_pull(task_ids='get_keyword_data', key='keyword')
-    category = kwargs['ti'].xcom_pull(task_ids='get_keyword_data', key='category')
+    keyword = kwargs['ti'].xcom_pull(
+        task_ids='get_keyword_data', key='keyword')
+    category = kwargs['ti'].xcom_pull(
+        task_ids='get_keyword_data', key='category')
     tiki_data = scrape_data_tiki(keyword, category)
-    kwargs['ti'].xcom_push(key='tiki_data', value=tiki_data)  # Đảm bảo push dữ liệu vào XCom
+    kwargs['ti'].xcom_push(key='tiki_data', value=tiki_data)
+    # Đảm bảo push dữ liệu vào XCom
 
 
 def run_scrape_data_sendo(**kwargs):
-    keyword = kwargs['ti'].xcom_pull(task_ids='get_keyword_data', key='keyword')
-    category = kwargs['ti'].xcom_pull(task_ids='get_keyword_data', key='category')
+    keyword = kwargs['ti'].xcom_pull(
+        task_ids='get_keyword_data', key='keyword')
+    category = kwargs['ti'].xcom_pull(
+        task_ids='get_keyword_data', key='category')
     sendo_data = scrape_data_sendo(keyword, category)
-    kwargs['ti'].xcom_push(key='sendo_data', value=sendo_data)  # Đảm bảo push dữ liệu vào XCom
+    kwargs['ti'].xcom_push(key='sendo_data', value=sendo_data)
+    # Đảm bảo push dữ liệu vào XCom
 
 
 crawl_tiki_task = PythonOperator(
@@ -61,10 +67,13 @@ crawl_sendo_task = PythonOperator(
 
 def save_to_s3(**kwargs):
     # Lấy dữ liệu từ XCom
-    tiki_data = kwargs['ti'].xcom_pull(task_ids='scrape_tiki', key='tiki_data')
-    sendo_data = kwargs['ti'].xcom_pull(task_ids='scrape_sendo', key='sendo_data')
-    keyword = kwargs['ti'].xcom_pull(task_ids='get_keyword_data', key='keyword')  # Lấy keyword từ XCom
-    
+    tiki_data = kwargs['ti'].xcom_pull(
+        task_ids='scrape_tiki', key='tiki_data')
+    sendo_data = kwargs['ti'].xcom_pull(
+        task_ids='scrape_sendo', key='sendo_data')
+    keyword = kwargs['ti'].xcom_pull(
+        task_ids='get_keyword_data', key='keyword')  # Lấy keyword từ XCom
+
     # Xử lý trường hợp dữ liệu rỗng
     if tiki_data is None:
         tiki_data = []
@@ -73,7 +82,7 @@ def save_to_s3(**kwargs):
 
     print("Tiki Data:", tiki_data)  # Kiểm tra dữ liệu Tiki
     print("Sendo Data:", sendo_data)  # Kiểm tra dữ liệu Sendo
-    
+
     # Tiến hành lưu vào S3
     save_data_to_s3(tiki_data + sendo_data, keyword)
 

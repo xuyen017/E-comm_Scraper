@@ -48,9 +48,10 @@ COPY dags /opt/airflow/dags
 COPY utils /opt/airflow/utils
 COPY config /opt/airflow/config
 COPY storage /opt/airflow/storage
+COPY processing /opt/airflow/processing 
 
 # Cập nhật PYTHONPATH để Python tìm kiếm trong các thư mục này
-ENV PYTHONPATH="/opt/airflow/scraping:/opt/airflow/parsing:/opt/airflow/storage:${PYTHONPATH}"
+ENV PYTHONPATH="/opt/airflow/scraping:/opt/airflow/parsing:/opt/airflow/storage:/opt/airflow/processing:${PYTHONPATH}"
 
 # Tạo các thư mục với quyền truy cập cần thiết nếu cần
-RUN mkdir -p /opt/airflow/dags /opt/airflow/utils /opt/airflow/scraping /opt/airflow/parsing /opt/airflow/config /opt/airflow/storage
+RUN mkdir -p /opt/airflow/dags /opt/airflow/utils /opt/airflow/scraping /opt/airflow/parsing /opt/airflow/config /opt/airflow/storage /opt/airflow/processing 

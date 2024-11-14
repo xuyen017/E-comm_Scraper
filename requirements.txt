@@ -1,7 +1,7 @@
 pandas
 beautifulsoup4
 yamlloader
-psycopg2-binary
+psycopg2-binary==2.9.5
 webdriver-manager
 requests
 selenium
@@ -9,3 +9,4 @@ boto3
 apache-airflow
 python-dotenv
 pyspark
+python-dotenv

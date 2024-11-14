@@ -13,6 +13,7 @@ services:
       - ./keyword.csv:/opt/airflow/keyword.csv
       - ./config:/opt/airflow/config
       - ./storage:/opt/airflow/storage
+      - ./processing:/opt/airflow/processing
     ports:
       - 8080:8080
     command: bash -c '(airflow db init && airflow users create --username admin --password admin --firstname The --lastname Xuyen --role Admin --email thexuyentrinh@gmail.com); airflow webserver & airflow scheduler'

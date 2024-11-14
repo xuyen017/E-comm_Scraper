@@ -16,6 +16,26 @@ aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 endpoint_url = os.getenv('ENDPOINT_URL')
 
 
+# Hàm tải dữ liệu từ S3
+def download_data_from_s3(file_name):
+    # Kết nối S3
+    s3 = boto3.client('s3',
+                      aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key,
+                      endpoint_url=endpoint_url)
+
+    # Tải file từ S3 vào bộ nhớ tạm
+    csv_buffer = BytesIO()
+    s3.download_fileobj(bucket_name, file_name, csv_buffer)
+    csv_buffer.seek(0)
+
+    # Đọc dữ liệu vào DataFrame và trả về
+    df = pd.read_csv(csv_buffer)
+    print(f"Tải thành công dữ liệu từ {bucket_name}/{file_name}")
+
+    return df
+
+
 # Hàm lưu dữ liệu lên S3
 def save_data_to_s3(data, keyword):
     if isinstance(data, list):
@@ -47,23 +67,3 @@ def save_data_to_s3(data, keyword):
     s3.put_object(
         Bucket=bucket_name, Key=file_name, Body=csv_buffer.getvalue())
     print(f"File uploaded successfully to {bucket_name}/{file_name}")
-
-
-# Hàm tải dữ liệu từ S3
-def download_data_from_s3(file_name):
-    # Kết nối S3
-    s3 = boto3.client('s3',
-                      aws_access_key_id=aws_access_key_id,
-                      aws_secret_access_key=aws_secret_access_key,
-                      endpoint_url=endpoint_url)
-
-    # Tải file từ S3 vào bộ nhớ tạm
-    csv_buffer = BytesIO()
-    s3.download_fileobj(bucket_name, file_name, csv_buffer)
-    csv_buffer.seek(0)
-
-    # Đọc dữ liệu vào DataFrame và trả về
-    df = pd.read_csv(csv_buffer)
-    print(f"Tải thành công dữ liệu từ {bucket_name}/{file_name}")
-
-    return df

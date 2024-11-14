@@ -31,8 +31,8 @@ def create_pool():
 
 # Hàm để kiểm tra xem file đã có trong log hay chưa
 def check_file_in_log(file_name):
+    create_pool()  # Đảm bảo rằng pool được khởi tạo trước khi sử dụng
     try:
-        # Sử dụng connection pool để lấy kết nối
         conn = postgres_pool.getconn()
         cursor = conn.cursor()
 
@@ -48,7 +48,6 @@ def check_file_in_log(file_name):
         cursor.close()
         postgres_pool.putconn(conn)
 
-        # Nếu kết quả là None, file chưa có trong log -> trả về False
         return result is not None
 
     except Exception as e:
@@ -58,8 +57,8 @@ def check_file_in_log(file_name):
 
 # Hàm cập nhật log trong PostgreSQL
 def update_data_processing_log(file_name):
+    create_pool()  # Đảm bảo rằng pool được khởi tạo trước khi sử dụng
     try:
-        # Sử dụng connection pool để lấy kết nối
         conn = postgres_pool.getconn()
         cursor = conn.cursor()
 
@@ -73,7 +72,6 @@ def update_data_processing_log(file_name):
                 last_processed = EXCLUDED.last_processed
         """, (file_name, datetime.now(), "completed", datetime.now()))
 
-        # Xác nhận và đóng kết nối
         conn.commit()
         logging.info(f"Data processing log for {file_name} updated successfully.")
     except Exception as e:
@@ -84,6 +82,8 @@ def update_data_processing_log(file_name):
 
 
 def load_to_postgresql(data, table_name):
+    create_pool()  # Đảm bảo rằng pool được khởi tạo trước khi sử dụng
+
     # Chuyển dữ liệu từ list hoặc DataFrame thành CSV
     if isinstance(data, pd.DataFrame):
         csv_buffer = StringIO()
@@ -93,7 +93,6 @@ def load_to_postgresql(data, table_name):
         raise ValueError("Data must be a pandas DataFrame")
 
     try:
-        # Sử dụng connection pool để lấy kết nối
         conn = postgres_pool.getconn()
         cursor = conn.cursor()
 

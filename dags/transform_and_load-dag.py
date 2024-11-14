@@ -29,7 +29,9 @@ def load_and_log_data(**kwargs):
     transformed_data = kwargs['ti'].xcom_pull(task_ids="transform_raw_data")
     file_name = kwargs['file_name']
     if transformed_data is not None:
+        # Lưu dữ liệu vào PostgreSQL
         load_to_postgresql(transformed_data, "ecommerce_data")
+        # Cập nhật log trong PostgreSQL
         update_data_processing_log(file_name)
 
 
